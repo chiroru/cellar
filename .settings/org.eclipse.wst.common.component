@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="2.0">
-  <wb-module deploy-name="wine-cellar-java">
-    <property name="context-root" value="wine-cellar-java"/>
+  <wb-module deploy-name="cellar">
+    <property name="context-root" value="cellar"/>
     <wb-resource deploy-path="/" source-path="src/main/webapp"/>
     <property name="java-output-path" value="/target/classes"/>
     <dependent-module archiveName="jersey-core-1.17.1.jar" deploy-path="/WEB-INF/lib" handle="module:/classpath/var/M2_REPO/com/sun/jersey/jersey-core/1.17.1/jersey-core-1.17.1.jar">
