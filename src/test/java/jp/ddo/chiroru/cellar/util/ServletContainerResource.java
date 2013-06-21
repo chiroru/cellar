@@ -24,9 +24,6 @@ public class ServletContainerResource
         port = Integer.valueOf(bundle.getString("jetty.port"));
     }
 
-    /* (non-Javadoc)
-     * @see org.junit.rules.ExternalResource#before()
-     */
     @Override
     protected void before() throws Throwable {
         server = new Server(port);
@@ -47,10 +44,4 @@ public class ServletContainerResource
         }
     }
 
-    public static void main(String[] args) throws Throwable {
-        ServletContainerResource r = new ServletContainerResource();
-        r.before();
-        Thread.sleep(5000);
-        r.after();
-    }
 }
