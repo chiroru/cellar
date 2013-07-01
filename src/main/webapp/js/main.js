@@ -3,6 +3,10 @@ var rootURL = "http://localhost:8080/cellar/rest/wines";
 
 var currentWine;
 
+var currentPage = 0;
+
+var listOfEnd = false;
+
 // Retrieve wine list when application starts 
 findAll();
 
@@ -52,6 +56,29 @@ $("img").error(function(){
 
 });
 
+$('.leftArea').on('scroll', function(eo) {
+//$('.leftArea').mousewheel(function(eo, delta, deltaX, deltaY) {
+	console.log('scroll');
+/*	console.log(deltaY);*/
+	console.log(eo.target);
+	console.log(eo.target.scrollTop);
+	console.log(eo.target.clientHeight);
+	console.log(eo.target.scrollHeight);
+	var h = eo.target.scrollTop + eo.target.clientHeight + 100;
+	console.log('scroll:' + h);
+	if (!listOfEnd && h > eo.target.scrollHeight) {
+		$.ajax({
+			type: 'GET',
+			url: rootURL,
+			dataType: "json", // data type of response
+			data: {
+				pageNumber: currentPage + 1
+			},
+			success: renderScrollList
+		});
+	};
+});
+
 function search(searchKey) {
 	if (searchKey == '') 
 		findAll();
@@ -71,7 +98,10 @@ function findAll() {
 		type: 'GET',
 		url: rootURL,
 		dataType: "json", // data type of response
-		success: renderList
+		data: {
+			pageNumber: currentPage + 1
+		},
+		success: renderScrollList
 	});
 }
 
@@ -155,9 +185,29 @@ function renderList(data) {
 	var list = data == null ? [] : (data instanceof Array ? data : [data]);
 
 	$('#wineList li').remove();
+	if (list.length > 0) {
 	$.each(list, function(index, wine) {
 		$('#wineList').append('<li><a href="#" data-identity="' + wine.id + '">'+wine.name+'</a></li>');
 	});
+	}
+	currentPage = 0;
+	listOfEnd = false;
+}
+
+function renderScrollList(data) {
+	// JAX-RS serializes an empty list as null, and a 'collection of one' as an object (not an 'array of one')
+	var list = data == null ? [] : (data instanceof Array ? data : [data]);
+
+	//$('#wineList li').remove();
+	if (list.length > 0) {
+	  $.each(list, function(index, wine) {
+		$('#wineList').append('<li><a href="#" data-identity="' + wine.id + '">'+wine.name+'</a></li>');
+	  });
+	  currentPage = currentPage + 1;
+	  $('#currentPage').text(currentPage);
+	} else {
+		listOfEnd = true;
+	};
 }
 
 function renderDetails(wine) {

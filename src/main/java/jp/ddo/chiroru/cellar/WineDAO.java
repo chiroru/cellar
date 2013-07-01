@@ -43,6 +43,26 @@ public class WineDAO {
         return list;
     }
 
+    public final List<Wine> findAllWithPaginate(int pageNumber) {
+        List<Wine> list = new ArrayList<Wine>();
+        Connection c = null;
+        String sql = "SELECT * FROM wine ORDER BY name limit 2 offset " + String.valueOf(2 * (pageNumber - 1));
+        try {
+            c = ConnectionHelper.getConnection();
+            Statement s = c.createStatement();
+            ResultSet rs = s.executeQuery(sql);
+            while (rs.next()) {
+                list.add(processRow(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        } finally {
+            ConnectionHelper.close(c);
+        }
+        return list;
+    }
+
     /**
      * <p>
      * 指定されたWineの銘柄を基に永続化されたWine情報の検索を行います.

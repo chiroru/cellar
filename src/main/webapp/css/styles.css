@@ -14,7 +14,7 @@
 	bottom: 20px;
 	width: 260px;
 	border:solid 1px #CCCCCC;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 
 .mainArea {
