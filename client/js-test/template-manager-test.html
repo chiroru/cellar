@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Unit Test</title>
+<link rel="stylesheet" href="../js/lib/qunit/qunit.css">
+<script type="text/javascript" src="../js/lib/jquery/jquery.js"></script>
+<script type="text/javascript" src="../js/lib/qunit/qunit.js"></script>
+<script type="text/javascript" src="../js/template-manager.js"></script>
+<script type="text/javascript">
+
+test("TmplManagerが定義されている", function () {
+  ok(TmplManager);
+});
+
+test("キャッシュに直接アクセスできない", function () {
+  ok(!TmplManager.templates);
+});
+
+var pathes = ["./data/test-template-00.html",
+              "./data/test-template-01.html"];
+
+TmplManager.load(pathes, function () {
+  test("テンプレートを一括ロードできる", function () {
+    expect(2);
+    var data00 = TmplManager.get(pathes[0]);
+    equal(data00, "<td>test00</td>\r\n");
+    var data01 = TmplManager.get(pathes[1]);
+    equal(data01, "<td>test01</td>\r\n");
+  });
+
+  test("キャッシュをクリアできる", function () {
+    equal(TmplManager.get(pathes[0]), "<td>test00</td>\r\n");
+    equal(TmplManager.get(pathes[1]), "<td>test01</td>\r\n");
+    TmplManager.clear();
+    equal(typeof TmplManager.get(pathes[0]), "undefined");
+    equal(typeof TmplManager.get(pathes[1]), "undefined");
+  });
+});
+
+
+</script>
+</head>
+<body>
+<div id="qunit">Unit Test</div>
+<div id="qunit-fixture">test markup</div>
+<div id="main" style="display:none;"></div>
+</body>
+</html>
