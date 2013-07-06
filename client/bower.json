@@ -5,7 +5,7 @@
     "backbone.localStorage": "1.1.4",
     "underscore": "1.4.4",
     "json2": "latest",
-    "bootstrap": "2.3.2"
+    "sinon": "1.7.3"
   },
   "devDependencies": {
     "qunit": "1,11.0"

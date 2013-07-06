@@ -24,19 +24,19 @@ public class WineResource {
     /** dao. */
     private WineDAO dao = new WineDAO();
 
-/*    @GET
+    @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public List<Wine> findAll() {
         System.out.println("findAll");
         return dao.findAll();
-    }*/
+    }
 
-    @GET
+/*    @GET
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
     public List<Wine> findAllWithPaginate(@QueryParam("pageNumber") String pageNumber) {
         System.out.println("findAllWithPaginate: " + pageNumber);
         return dao.findAllWithPaginate(Integer.parseInt(pageNumber));
-    }
+    }*/
 
     @GET @Path("search/{query}")
     @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })

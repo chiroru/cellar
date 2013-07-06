@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<title>backbone model test</title>
+<link rel="stylesheet" href="../js/lib/qunit/qunit.css"/>
+<script type="text/javascript" src="../js/lib/jquery/jquery.js"></script>
+<script type="text/javascript" src="../js/lib/underscore/underscore.js"></script>
+<script type="text/javascript" src="../js/lib/backbone/backbone.js"></script>
+<script type="text/javascript" src="./lib/sinon.js"></script>
+<script type="text/javascript" src="../js/lib/qunit/qunit.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function () {
+
+  test("Model生成時点にinitializeメソッドがコールされる", function () {
+    expect(1);
+    //var spy = sinon.spy(Backbone.Model.prototype, "initialize");
+    var Test = Backbone.Model.extend({
+      defaults: function () {
+        
+      },
+      initialize: function () {
+        console.log("cid : [" + this.cid + "]");
+      }
+    });
+    var spy = sinon.spy(Test.prototype, "initialize");
+    var t = new Test();
+    ok(spy.calledOnce , "method is called once");
+  });
+
+  test("Model生成時点にdefaultsソッドがコールされる", function () {
+    expect(1);
+    //var spy = sinon.spy(Backbone.Model.prototype, "initialize");
+    var Test = Backbone.Model.extend({
+      defaults: {
+        "name": 'test'
+      },
+      initialize: function () {
+        console.log("cid : [" + this.cid + "]");
+      }
+    });
+    var t = new Test();
+    equal(t.get("name") , "test");
+  });
+
+  test("Model生成時点ではid属性が空である", function () {
+    expect(1);
+    var Test = Backbone.Model.extend({
+      initialize: function () {
+        console.log("cid : [" + this.cid + "]");
+      }
+    });
+    var t = new Test();
+    ok(!t.id);
+  });
+
+  test("Model生成時点ではcid属性が採番されている", function () {
+    expect(2);
+    var Test = Backbone.Model.extend({
+      initialize: function () {
+        console.log("cid : [" + this.cid + "]");
+      }
+    });
+    var t = new Test();
+    ok(t.cid);
+    ok(t.cid.length > 0);
+  });
+
+  test("Modelのプロパティがエスケープされる", function () {
+    expect(2);
+    var Test = Backbone.Model.extend({
+      defaults: {
+        "name": "<test/>"
+      },
+      initialize: function () {
+        console.log("cid : [" + this.cid + "]");
+      },
+    });
+    var t = new Test();
+    equal(t.get("name"), "<test/>");
+    equal(t.escape("name"), "&lt;test&#x2F;&gt;");
+  });
+
+  test("属性が定義されているチェックできる", function () {
+    expect(5);
+    var Test = Backbone.Model.extend({
+      defaults: {
+        attr0: "test",
+        attr1: undefined,
+        attr2: null,
+        attr3: NaN,
+        attr4: ""
+      }
+    });
+    var t = new Test();
+    ok(t.has("attr0"));
+    ok(!t.has("attr1"));
+    ok(!t.has("attr2"));
+    ok(t.has("attr3"));
+    ok(t.has("attr4"));
+  });
+
+  test("属性をモデルから削除できる", function () {
+    var Test = Backbone.Model.extend({
+      defaults: {
+        attr: "test"
+      }
+    });
+    var t = new Test();
+    ok(t.has("attr"));
+
+    t.unset("attr");
+    ok(!t.has("attr"));
+  });
+    
+  test("属性をモデルから削除するとchangeイベントがトリガーされる", function () {
+    expect(1);
+    var Test = Backbone.Model.extend({
+      defaults: {
+        attr: "test"
+      }
+    });
+    var t = new Test();
+    t.on("change", function () {
+      console.log("1=======================");
+      ok(true);
+    });
+    t.on("change:attr", function () {
+      console.log("2=======================");
+    });
+    console.log("3");
+    t.unset("attr");
+    console.log("4");
+    console.log("5");
+  });
+
+  test("属性をモデルから削除されてもsilentオプションが指定されている場合changeイベントがトリガーされない", function () {
+    expect(1);
+    var Test = Backbone.Model.extend({
+      defaults: {
+        attr: "test"
+      }
+    });
+    var t = new Test();
+    t.on("change", function () {
+      console.log("1=======================");
+      ok(false);
+    });
+    t.on("change:attr", function () {
+      console.log("2=======================");
+      ok(false);
+    });
+    console.log("3");
+    t.unset("attr", {silent:true});
+    console.log("4");
+    console.log("5");
+    ok(true);
+  });
+
+  test("すべての属性を削除できる", function () {
+    expect(4);  
+    var properties = ["name", "address", "tel", "age"];
+    var values = ["test", "Japan", "03-1234-5678", 20];
+
+    var Test = Backbone.Model.extend({
+    });
+
+    var t = new Test();
+
+    var l = properties.length;
+    for (var i = 0; i < l; i++) {
+      t.set(l[i], values[i]);
+    };
+
+    t.clear();
+
+    for (var j = 0; j < l; j++) {
+      ok(!t.hasOwnProperty[l[j]]);
+    };
+  });
+});
+
+
+</script>
+</head>
+<body>
+<div id="qunit">Unit Test for flexible.js</div>
+<div id="qunit-backbone-model">test markup</div>
+<div id="main" style="display:none"></div>
+</body>
+</html>
