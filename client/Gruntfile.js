@@ -17,7 +17,7 @@ module.exports = function(grunt){
           install: true,
           verbose: true,
           cleanTargetDir: true,
-          cleanBowerDir: true
+          cleanBowerDir: true 
         }
       }
     },
@@ -57,6 +57,15 @@ module.exports = function(grunt){
           destination: 'doc'
         }
       }
+    },
+
+    jshint: {
+      files: [
+        'js/*.js',
+      ],
+      options: {
+        jshintrc: '.jshintrc'
+      }
     }
   });
 
@@ -72,4 +81,5 @@ module.exports = function(grunt){
   grunt.registerTask('deploy', ['livereload-start', 'connect', 'regarde']);
   grunt.registerTask('doc', ['jsdoc']);
   grunt.registerTask('default', ['jsdoc']);
+  grunt.registerTask('check', ['jshint']);
 };
