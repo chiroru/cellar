@@ -5,7 +5,8 @@
     "backbone.localStorage": "1.1.4",
     "underscore": "1.4.4",
     "json2": "latest",
-    "sinon": "1.7.3"
+    "sinon": "1.7.3",
+    "jquery-mockjax": "1.5.2"
   },
   "devDependencies": {
     "qunit": "1,11.0"

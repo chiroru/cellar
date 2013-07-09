@@ -7,6 +7,7 @@
 <script type="text/javascript" src="../js/lib/jquery/jquery.js"></script>
 <script type="text/javascript" src="../js/lib/underscore/underscore.js"></script>
 <script type="text/javascript" src="../js/lib/backbone/backbone.js"></script>
+<script type="text/javascript" src="../js/lib/jquery-mockjax/jquery.mockjax.js"></script>
 <script type="text/javascript" src="./lib/sinon.js"></script>
 <script type="text/javascript" src="../js/lib/qunit/qunit.js"></script>
 <script type="text/javascript">
@@ -178,6 +179,28 @@ $(document).ready(function () {
     for (var j = 0; j < l; j++) {
       ok(!t.hasOwnProperty[l[j]]);
     };
+  });
+
+  // fetch model.fetch([options])
+  // Backbone.syncにデリゲーとすることによってサーバ側の状態でモデルをリセットする。
+  // 戻り値はjqXHRです。
+  asyncTest("モデルをサーバ側の状態でリセットする", 1, function () {
+    var Test = Backbone.Model.extend({
+      url: "test"
+    });
+    var t = new Test({id: "1", name: "test"});
+    $.mockjax({
+      url: "test",
+      responseText: {
+        id: "1",
+        name: "modified"
+      }
+    });
+    var resp = t.fetch();
+    setTimeout(function () {
+      equal(t.get("name"), "modified");
+      start();
+    }, 1000);
   });
 });
 
