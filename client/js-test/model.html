@@ -200,7 +200,52 @@ $(document).ready(function () {
     setTimeout(function () {
       equal(t.get("name"), "modified");
       start();
-    }, 1000);
+    }, 1500);
+    $.mockjaxClear();
+  });
+
+  // fetch model.save([attributes], [options])
+  // Backbone.syncにデリゲーとすることによってサーバ側の状態でモデルをリセットする。
+  // idプロパティが指定されている場合はPOST、指定されていない場合はPUT。
+  asyncTest("モデルの状態をサーバ側に送信する", 3, function() {
+    var Test = Backbone.Model.extend({
+      url: "test"
+    });
+    var t = new Test({name: "test", address: "japan"});
+
+    Backbone.sync = function (method, model) {
+      equal(method, "create");
+      equal(model.get("name"), "test");
+      equal(model.get("address"), "japan");
+    };
+
+    t.save();
+    setTimeout(function () {
+      start();
+    }, 1500);
+  });
+
+  test("モデルが新たに生成された場合（idプロパティがまだ設定されていない場合）を検知できる", function() {
+    var Test = Backbone.Model.extend({
+    });
+    var t = new Test({name: "test", address: "japan"});
+    equal(t.isNew(), true);
+  });
+
+  test("特定のプロパティの変更時にchangeイベントが発火されたかどうか判定できる", function () {
+    var m = new Backbone.Model();
+    m.on("change:prop2", function () {
+      ok(false, "prop2 プロパティでchangeイベントが発生しないことを確認");
+    });
+    m.set({prop1: "test"});
+    equal(m.hasChanged("prop1"), true);
+    m.set({prop2: "test"}, {silent:true});
+    equal(m.hasChanged("prop1"), false);
+    equal(m.hasChanged("prop2"), true);
+    m.set({prop3: "modified"});
+    equal(m.hasChanged("prop1"), false);
+    equal(m.hasChanged("prop2"), false);
+    equal(m.hasChanged("prop3"), true);
   });
 });
 
